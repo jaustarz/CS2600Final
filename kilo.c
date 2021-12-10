@@ -461,7 +461,7 @@ int editorRowCxToRx(erow *row, int cx)
     for (j = 0; j < cx; j++) 
     {
         if (row->chars[j] == '\t')
-        rx += (KILO_TAB_STOP - 1) - (rx % KILO_TAB_STOP);
+            rx += (KILO_TAB_STOP - 1) - (rx % KILO_TAB_STOP);
         rx++;
     }
     return rx;
@@ -474,7 +474,7 @@ int editorRowRxToCx(erow *row, int rx)
     for (cx = 0; cx < row->size; cx++) 
     {
         if (row->chars[cx] == '\t')
-        cur_rx += (KILO_TAB_STOP - 1) - (cur_rx % KILO_TAB_STOP);
+            cur_rx += (KILO_TAB_STOP - 1) - (cur_rx % KILO_TAB_STOP);
         cur_rx++;
         if (cur_rx > rx) return cx;
     }
@@ -654,6 +654,7 @@ char *editorRowsToString(int *buflen)
         *p = '\n';
         p++;
     }
+
     return buf;
 }
 
@@ -670,11 +671,10 @@ void editorOpen(char *filename)
     char *line = NULL;
     size_t linecap = 0;
     ssize_t linelen;
-    linelen = getline(&line, &linecap, fp);
     while ((linelen = getline(&line, &linecap, fp)) != -1) 
     {
         while (linelen > 0 && (line[linelen - 1] == '\n' || line[linelen - 1] == '\r'))
-        linelen--;
+            linelen--;
         editorInsertRow(E.numrows, line, linelen);
     }
     free(line);
@@ -739,7 +739,7 @@ void editorFindCallback(char *query, int key)
     if (key == '\r' || key == '\x1b')
     {
         last_match = -1;
-        direction = -1;
+        direction = 1;
         return;
     }
     else if (key == ARROW_RIGHT || key == ARROW_DOWN) 
@@ -844,7 +844,6 @@ void editorScroll()
     {
         E.rowoff = E.cy;
     }
-
     if (E.cy >= E.rowoff + E.screenrows) 
     {
         E.rowoff = E.cy - E.screenrows + 1;
@@ -862,7 +861,7 @@ void editorScroll()
 void editorDrawRows(struct abuf *ab)
 {
     int y;
-    for(y =0; y<E.screenrows; y++)
+    for(y = 0; y < E.screenrows; y++)
     {
         int filerow = y + E.rowoff;
         if(filerow >= E.numrows)
